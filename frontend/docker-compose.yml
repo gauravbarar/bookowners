@@ -1,0 +1,11 @@
+name: books-frontend
+
+services:
+  frontend:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:5080}
+    image: books-frontend
+    ports:
+      - "127.0.0.1:3000:3000"

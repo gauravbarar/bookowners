@@ -1,0 +1,12 @@
+**/bin/
+**/obj/
+tests/
+clients/
+.config/
+.vs/
+.env
+.env.*
+*.md
+Dockerfile
+docker-compose.yml
+.dockerignore

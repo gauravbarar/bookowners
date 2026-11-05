@@ -1,0 +1,38 @@
+name: books-backend
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "$$MSSQL_SA_PASSWORD" -Q "SELECT 1" -b
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  # for quick local testing purpose, remove or stop if want to debug
+  backend:
+    build: .
+    image: books-backend
+    environment:
+      ConnectionStrings__BookOwners: Server=sqlserver,1433;Database=BookOwners;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True
+      Database__ApplyMigrationsOnStartup: "true"
+      Cors__AllowedOrigins__0: ${FRONTEND_ORIGIN:-http://localhost:3000}
+      FeatureManagement__UseBupaApi: ${USE_BUPA_API:-false}
+    ports:
+      - "127.0.0.1:5080:8080"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+
+volumes:
+  sqlserver-data:

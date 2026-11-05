@@ -1,0 +1,17 @@
+.header {
+  padding: var(--space-md);
+  color: var(--color-background);
+  background: var(--color-primary);
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.main {
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-md);
+}

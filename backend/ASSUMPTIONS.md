@@ -1,0 +1,11 @@
+# Assumptions for this exercise:
+
+- It's designed to replace the existing Bupa API. This means it uses the same route and JSON format, but it's built on MSSQL. The old bupa API only gets used if the `UseBupaApi` flag is turned on, and that's off by default.
+- The **data structure** matches what's currently in use. Owners will have a `name`, `age`, and `books`. Books will have a `name` and `type`.
+- **Book types** are `Hardcover`, `Paperback`, and `Ebook`, just like the live data. If the Bupa API sends a new type as a string, it won't break the response; it'll just pass through.
+- The initial data was taken directly from a live API response on November 5, 2026.
+- We're treating any failures from the Bupa API as intentional. During testing, it sometimes sent 429 errors, or a 200 OK with an empty body, or even 200 OK with bad data (like changed key casing, a 'books' key that was blank, or missing owners). If the response doesn't exactly match the contract, we reject it, try again, and then return a 502 error. We don't try to fix corrupted data because we can't tell if an owner is missing from a bad response. If the response matches the contract but has fewer owners, we can't detect that either.
+- The API sends back the raw data shape. The instructions said the server should return data "similar to the above," so things like grouping, sorting, and filtering are left for the client to handle.
+- `@books/api-client` is published as a versioned `.tgz` that is copied into the frontend repo, so both repos stay private and need no registry or token. With a private registry, `npm publish` would replace the copy. The package is marked `private` to prevent an accidental public publish, so that flag should be removed at that point.
+- TLS is managed by whatever is in front of the containers (like a load balancer or ingress). So, this API itself serves plain HTTP on port 8080 and doesn't redirect to HTTPS.
+- **Database migrations** run on startup only if `Database:ApplyMigrationsOnStartup` is true. This works for a single instance setup. If there are multiple instances, migrations should be a separate deployment step.

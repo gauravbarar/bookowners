@@ -1,0 +1,14 @@
+:root {
+  --color-primary: #0079c8;
+  --color-error: #b3261e;
+  --color-text: #171717;
+  --color-border: #c4c4c4;
+  --color-shadow: #55585c;
+  --color-background: #ffffff;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --radius: 0.5rem;
+
+  /* CSS variables can't be used in media queries. The mobile breakpoint is max-width: 600px. */
+}
